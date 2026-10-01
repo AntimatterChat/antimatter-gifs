@@ -161,3 +161,24 @@ func TestNewID(t *testing.T) {
 		seen[id] = true
 	}
 }
+
+func TestStickerPackManifest(t *testing.T) {
+	m, err := StickerPackManifest("../../stickers/pack.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if m.Kind != index.KindSticker || m.Source != StickerPackSource || m.Attribution == "" || len(m.Items) != 24 || len(m.Categories) != 3 {
+		t.Fatalf("manifest %+v", m)
+	}
+	first := m.Items[0]
+	if first.Key != "lab-crew/it-works" || first.SourceID != first.Key || first.Score != 24 || first.Title != "It works!" ||
+		first.Tags[len(first.Tags)-1] != "lab crew" || first.BgColor == "" {
+		t.Fatalf("first item %+v", first)
+	}
+	if _, err := os.Stat(m.resolve(first.File)); err != nil {
+		t.Fatal(err)
+	}
+	if c := m.Categories[1]; c.Name != "Reactions" || c.SearchTerm != "reactions" || c.Position != 1 || len(c.Items) != 8 {
+		t.Fatalf("second pack %+v", c)
+	}
+}
