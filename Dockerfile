@@ -20,6 +20,10 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
     go build -trimpath -ldflags "-s -w" -o /out/antimatter-gifs ./cmd/antimatter-gifs
 
 FROM alpine:3.22
+LABEL org.opencontainers.image.title="antimatter-gifs" \
+      org.opencontainers.image.description="Self-hosted GIF and sticker service for Antimatter, with the Tenor API v2" \
+      org.opencontainers.image.source="https://github.com/AntimatterChat/antimatter-gifs" \
+      org.opencontainers.image.licenses="AGPL-3.0-only AND CC-BY-4.0"
 # ffmpeg, gifsicle and rsvg-convert generate the GIF, video and sticker formats at import; the
 # service itself doesn't need them. The fonts draw the sticker labels.
 RUN apk add --no-cache ffmpeg gifsicle rsvg-convert font-dejavu fontconfig ca-certificates \
