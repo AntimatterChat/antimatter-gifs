@@ -1,0 +1,14 @@
+# Built binaries
+/bin/
+/antimatter-gifs
+
+# Index, media and fetched third-party content: never committed (see README)
+/data/
+*.db
+*.db-shm
+*.db-wal
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
