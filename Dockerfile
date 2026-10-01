@@ -35,6 +35,7 @@ ENV AM_GIFS_DATA_DIR=/data \
 USER gifs
 VOLUME /data
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s CMD ["antimatter-gifs", "healthcheck"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --start-interval=2s \
+    CMD ["antimatter-gifs", "healthcheck"]
 ENTRYPOINT ["antimatter-gifs"]
 CMD ["serve"]
