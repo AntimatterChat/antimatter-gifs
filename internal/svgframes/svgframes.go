@@ -119,6 +119,9 @@ func parseAnim(element, attrs string) (anim, error) {
 		if err != nil || len(nums) == 0 {
 			return an, fmt.Errorf("invalid value %q", v)
 		}
+		if nums, err = fillTransform(an.transformType, nums); err != nil {
+			return an, fmt.Errorf("invalid value %q: %w", v, err)
+		}
 		an.values = append(an.values, nums)
 	}
 	if len(an.values) == 0 {
@@ -163,6 +166,44 @@ func parseAnim(element, attrs string) (anim, error) {
 	}
 	an.additive = at["additive"] == "sum"
 	return an, nil
+}
+
+// fillTransform completes the omitted parameters of a transform value as SVG reads them, so that
+// values of different lengths interpolate like in browsers: scale(s) is scale(s s), translate(x)
+// is translate(x 0) and rotate(a) is rotate(a 0 0). Otherwise "1;0.9 1.1" would scale y from 0,
+// flattening the first frame.
+func fillTransform(transformType string, v []float64) ([]float64, error) {
+	switch transformType {
+	case "":
+		if len(v) != 1 {
+			return nil, fmt.Errorf("an opacity is one number")
+		}
+		return v, nil
+	case "scale":
+		switch len(v) {
+		case 1:
+			return []float64{v[0], v[0]}, nil
+		case 2:
+			return v, nil
+		}
+		return nil, fmt.Errorf("scale takes one or two numbers")
+	case "rotate":
+		switch len(v) {
+		case 1:
+			return []float64{v[0], 0, 0}, nil
+		case 3:
+			return v, nil
+		}
+		return nil, fmt.Errorf("rotate takes one or three numbers")
+	default:
+		switch len(v) {
+		case 1:
+			return []float64{v[0], 0}, nil
+		case 2:
+			return v, nil
+		}
+		return nil, fmt.Errorf("translate takes one or two numbers")
+	}
 }
 
 func parseDuration(v string) (float64, error) {

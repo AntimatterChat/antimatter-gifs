@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -53,6 +54,25 @@ func TestFrames(t *testing.T) {
 	}
 }
 
+// Values may omit parameters: scale(s) is scale(s s), translate(x) translate(x 0) and rotate(a)
+// rotate(a 0 0), also when interpolating with values that give them.
+func TestShortValues(t *testing.T) {
+	a, err := Parse(`<svg><g>` +
+		`<animateTransform attributeName="transform" type="translate" values="4;0 8" dur="1s"/>` +
+		`<animateTransform attributeName="transform" type="scale" values="1;0.9 1.1;1" dur="1s" additive="sum"/>` +
+		`<animateTransform attributeName="transform" type="rotate" values="0;90 5 5" dur="1s" additive="sum"/>` +
+		`<rect/></g></svg>`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if f := a.Frame(0); !strings.Contains(f, `transform="translate(4 0) scale(1 1) rotate(0 0 0)"`) {
+		t.Fatalf("frame 0: %s", f)
+	}
+	if f := a.Frame(0.5); !strings.Contains(f, `transform="translate(2 4) scale(0.9 1.1) rotate(45 2.5 2.5)"`) {
+		t.Fatalf("frame at 0.5s: %s", f)
+	}
+}
+
 func TestStill(t *testing.T) {
 	a, err := Parse(`<svg><g transform="scale(2)"><rect/></g></svg>`)
 	if err != nil {
@@ -75,6 +95,9 @@ func TestInvalid(t *testing.T) {
 		"dur":           `<g><animate attributeName="opacity" values="0;1" dur="indefinite"/></g>`,
 		"discrete":      `<g><animate attributeName="opacity" values="0;1" calcMode="discrete" dur="1s"/></g>`,
 		"not closed":    `<g><animate attributeName="opacity" values="0;1" dur="1s"></animate></g>`,
+		"rotate (a x)":  `<g><animateTransform attributeName="transform" type="rotate" values="0 5;90 5" dur="1s"/></g>`,
+		"scale (3)":     `<g><animateTransform attributeName="transform" type="scale" values="1 1 1;2" dur="1s"/></g>`,
+		"opacity (2)":   `<g><animate attributeName="opacity" values="0 1;1" dur="1s"/></g>`,
 	} {
 		if _, err := Parse(svg); err == nil {
 			t.Errorf("%s: no error", name)
@@ -93,7 +116,10 @@ func TestCubicBezier(t *testing.T) {
 	}
 }
 
-// The sticker pack of the repository must stay renderable.
+// A scale with a zero factor flattens what it draws.
+var flattened = regexp.MustCompile(`scale\((0|-?[\d.]+ 0)\)`)
+
+// The sticker pack of the repository must stay renderable, with nothing flattened to nothing.
 func TestStickerPack(t *testing.T) {
 	files, err := filepath.Glob("../../stickers/svg/*.svg")
 	if err != nil || len(files) == 0 {
@@ -115,6 +141,9 @@ func TestStickerPack(t *testing.T) {
 		for _, frame := range a.Frames(20) {
 			if strings.Contains(frame, "<animate") || strings.Contains(frame, "NaN") {
 				t.Fatalf("%s: bad frame", file)
+			}
+			if m := flattened.FindString(frame); m != "" {
+				t.Fatalf("%s: a frame has %s", file, m)
 			}
 		}
 	}
