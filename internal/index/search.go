@@ -163,9 +163,8 @@ func (s *Store) Search(ctx context.Context, query string, f Filter, offset, limi
 		}
 		coverage := wordCoverage(words, Tokenize(text))
 		c.rank = -bm25*coverage*coverage + 0.2*math.Log1p(math.Max(score, 0)+5*shares)
-		if prev := ranked[c.id]; prev != nil {
-			prev.rank += c.rank
-			continue
+		if ranked[c.id] != nil {
+			continue // curated, keeps its place
 		}
 		ranked[c.id] = &c
 	}
