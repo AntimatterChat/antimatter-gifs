@@ -84,6 +84,9 @@ func newFixture(t *testing.T, cfg Config) *fixture {
 	}
 	cfg.MediaDir = media
 	cfg.Now = func() time.Time { return now }
+	if cfg.CORSOrigins == nil {
+		cfg.CORSOrigins = []string{"*"}
+	}
 	return &fixture{store: store, mediaDir: media, handler: New(store, cfg).Handler()}
 }
 
@@ -304,6 +307,91 @@ func TestCategoriesAndTerms(t *testing.T) {
 		if rec := f.do(t, http.MethodGet, target, nil); rec.Code != http.StatusBadRequest {
 			t.Fatalf("%s without q: %d", target, rec.Code)
 		}
+	}
+}
+
+func TestAPIKeys(t *testing.T) {
+	f := newFixture(t, Config{APIKeys: []string{"k1", " k2 "}})
+	var e errorResponse
+	if rec := f.get(t, "/v2/featured", &e); rec.Code != http.StatusForbidden || e.Error.Status != "PERMISSION_DENIED" {
+		t.Fatalf("no key: %d %+v", rec.Code, e)
+	}
+	if rec := f.get(t, "/v2/featured?key=nope", &e); rec.Code != http.StatusBadRequest || e.Error.Status != "INVALID_ARGUMENT" {
+		t.Fatalf("bad key: %d %+v", rec.Code, e)
+	}
+	if rec := f.do(t, http.MethodGet, "/v2/featured?key=k2", nil); rec.Code != http.StatusOK {
+		t.Fatalf("good key: %d", rec.Code)
+	}
+	if rec := f.do(t, http.MethodGet, "/v2/featured", map[string]string{"X-Goog-Api-Key": "k1"}); rec.Code != http.StatusOK {
+		t.Fatalf("key header: %d", rec.Code)
+	}
+	// Media and health don't need a key.
+	if rec := f.do(t, http.MethodGet, "/media/g/100/gif.gif", nil); rec.Code != http.StatusOK {
+		t.Fatalf("media: %d", rec.Code)
+	}
+	if rec := f.do(t, http.MethodGet, "/healthz", nil); rec.Code != http.StatusOK {
+		t.Fatalf("health: %d", rec.Code)
+	}
+}
+
+func TestCORS(t *testing.T) {
+	f := newFixture(t, Config{CORSOrigins: []string{"https://chat.example.com"}})
+	rec := f.do(t, http.MethodOptions, "/v2/search?q=cat", map[string]string{"Origin": "https://chat.example.com", "Access-Control-Request-Method": "GET"})
+	if rec.Code != http.StatusNoContent || rec.Header().Get("Access-Control-Allow-Origin") != "https://chat.example.com" ||
+		!strings.Contains(rec.Header().Get("Access-Control-Allow-Methods"), "GET") {
+		t.Fatalf("preflight: %d %v", rec.Code, rec.Header())
+	}
+	rec = f.do(t, http.MethodGet, "/v2/search?q=cat", map[string]string{"Origin": "https://evil.example.com"})
+	if rec.Code != http.StatusOK || rec.Header().Get("Access-Control-Allow-Origin") != "" {
+		t.Fatalf("other origin: %d %v", rec.Code, rec.Header())
+	}
+
+	f = newFixture(t, Config{})
+	rec = f.do(t, http.MethodGet, "/media/g/100/gif.gif", map[string]string{"Origin": "https://any.example.com"})
+	if rec.Header().Get("Access-Control-Allow-Origin") != "*" {
+		t.Fatalf("wildcard: %v", rec.Header())
+	}
+}
+
+func TestRateLimit(t *testing.T) {
+	f := newFixture(t, Config{RateLimit: 1, RateBurst: 2})
+	for i := range 2 {
+		if rec := f.do(t, http.MethodGet, "/v2/featured", nil); rec.Code != http.StatusOK {
+			t.Fatalf("request %d: %d", i, rec.Code)
+		}
+	}
+	rec := f.do(t, http.MethodGet, "/v2/featured", nil)
+	var e errorResponse
+	_ = json.Unmarshal(rec.Body.Bytes(), &e)
+	if rec.Code != http.StatusTooManyRequests || rec.Header().Get("Retry-After") != "1" || e.Error.Status != "RESOURCE_EXHAUSTED" {
+		t.Fatalf("over the limit: %d %v %+v", rec.Code, rec.Header(), e)
+	}
+	// Another API key is another client.
+	if rec := f.do(t, http.MethodGet, "/v2/featured?key=other", nil); rec.Code != http.StatusOK {
+		t.Fatalf("other client: %d", rec.Code)
+	}
+	// Media aren't limited.
+	if rec := f.do(t, http.MethodGet, "/media/g/100/gif.gif", nil); rec.Code != http.StatusOK {
+		t.Fatalf("media: %d", rec.Code)
+	}
+}
+
+func TestLimiterRefills(t *testing.T) {
+	l := newLimiter(2, 1)
+	t0 := now
+	if ok, _ := l.allow("a", t0); !ok {
+		t.Fatal("first request refused")
+	}
+	if ok, retry := l.allow("a", t0); ok || retry != 500*time.Millisecond {
+		t.Fatalf("second request: %v %v", ok, retry)
+	}
+	if ok, _ := l.allow("a", t0.Add(600*time.Millisecond)); !ok {
+		t.Fatal("refilled request refused")
+	}
+	l.allow("b", t0)
+	l.allow("c", t0.Add(2*time.Minute))
+	if _, ok := l.buckets["b"]; ok {
+		t.Fatal("idle bucket not swept")
 	}
 }
 

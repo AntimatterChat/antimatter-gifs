@@ -28,7 +28,15 @@ type Config struct {
 	MediaURL string
 	// MediaDir is the directory of the media files, served under /media/ when non-empty.
 	MediaDir string
-	// TrustProxy uses the X-Forwarded-Proto/-Host headers of a reverse proxy.
+	// APIKeys are the accepted API keys; when empty, no key is required.
+	APIKeys []string
+	// CORSOrigins are the origins allowed to call the API from a browser ("*" for all).
+	CORSOrigins []string
+	// RateLimit is the sustained number of API requests per second allowed per client (API key and
+	// IP address), RateBurst the size of bursts. A zero RateLimit disables rate limiting.
+	RateLimit float64
+	RateBurst int
+	// TrustProxy uses the X-Forwarded-For/-Proto/-Host headers of a reverse proxy.
 	TrustProxy bool
 	Logger     *slog.Logger
 	// Now returns the current time; time.Now when nil (tests set it).
@@ -37,9 +45,11 @@ type Config struct {
 
 // Server answers the API requests.
 type Server struct {
-	cfg   Config
-	store *index.Store
-	log   *slog.Logger
+	cfg     Config
+	store   *index.Store
+	log     *slog.Logger
+	limiter *limiter
+	keys    [][]byte
 }
 
 // New returns a server over the store.
@@ -54,14 +64,27 @@ func New(store *index.Store, cfg Config) *Server {
 	if cfg.MediaURL != "" && !strings.HasSuffix(cfg.MediaURL, "/") {
 		cfg.MediaURL += "/"
 	}
-	return &Server{cfg: cfg, store: store, log: cfg.Logger}
+	s := &Server{cfg: cfg, store: store, log: cfg.Logger}
+	for _, k := range cfg.APIKeys {
+		if k = strings.TrimSpace(k); k != "" {
+			s.keys = append(s.keys, []byte(k))
+		}
+	}
+	if cfg.RateLimit > 0 {
+		burst := cfg.RateBurst
+		if burst < 1 {
+			burst = int(cfg.RateLimit*2) + 1
+		}
+		s.limiter = newLimiter(cfg.RateLimit, burst)
+	}
+	return s
 }
 
 // Handler returns the HTTP handler of the service.
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	api := func(h http.HandlerFunc) http.Handler {
-		return h
+		return s.cors(s.rateLimit(s.requireKey(h)))
 	}
 	mux.Handle("/v2/search", api(s.handleSearch))
 	mux.Handle("/v2/featured", api(s.handleFeatured))
@@ -71,11 +94,11 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("/v2/trending_terms", api(s.handleTrendingTerms))
 	mux.Handle("/v2/registershare", api(s.handleRegisterShare))
 	mux.Handle("/v2/posts", api(s.handlePosts))
-	mux.HandleFunc("/v2/", func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/v2/", s.cors(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "NOT_FOUND", "Unknown endpoint.")
-	})
+	})))
 	if s.cfg.MediaDir != "" {
-		mux.Handle("GET /media/", http.StripPrefix("/media/", http.HandlerFunc(s.handleMedia)))
+		mux.Handle("GET /media/", s.cors(http.StripPrefix("/media/", http.HandlerFunc(s.handleMedia))))
 	}
 	mux.Handle("GET /view/{id}", http.HandlerFunc(s.handleView))
 	mux.HandleFunc("GET /healthz", s.handleHealth)
