@@ -1,0 +1,408 @@
+{
+  "license": "CC-BY-4.0",
+  "author": "Antimatter contributors",
+  "packs": [
+    {
+      "slug": "lab-crew",
+      "name": "Lab crew",
+      "stickers": [
+        {
+          "slug": "it-works",
+          "label": "It works!",
+          "title": "It works!",
+          "description": "A bubbling flask celebrating a successful experiment",
+          "tags": [
+            "science",
+            "success",
+            "yes",
+            "celebrate",
+            "flask",
+            "experiment"
+          ],
+          "bg": "#0891B2",
+          "file": "svg/it-works.svg"
+        },
+        {
+          "slug": "looking",
+          "label": "Looking…",
+          "title": "Looking…",
+          "description": "A microscope taking a closer look",
+          "tags": [
+            "science",
+            "microscope",
+            "looking",
+            "investigate",
+            "research",
+            "curious"
+          ],
+          "bg": "#6D28D9",
+          "file": "svg/looking.svg"
+        },
+        {
+          "slug": "attracted",
+          "label": "Attracted",
+          "title": "Attracted",
+          "description": "A horseshoe magnet with pulsing field lines",
+          "tags": [
+            "science",
+            "magnet",
+            "attracted",
+            "love",
+            "crush",
+            "physics"
+          ],
+          "bg": "#DC2626",
+          "file": "svg/attracted.svg"
+        },
+        {
+          "slug": "atomic",
+          "label": "Atomic",
+          "title": "Atomic",
+          "description": "A spinning atom with orbiting electrons",
+          "tags": [
+            "science",
+            "atom",
+            "atomic",
+            "physics",
+            "antimatter",
+            "wow"
+          ],
+          "bg": "#2563EB",
+          "file": "svg/atomic.svg"
+        },
+        {
+          "slug": "in-my-dna",
+          "label": "In my DNA",
+          "title": "In my DNA",
+          "description": "A swaying DNA double helix",
+          "tags": [
+            "science",
+            "dna",
+            "biology",
+            "helix",
+            "identity",
+            "proud"
+          ],
+          "bg": "#059669",
+          "file": "svg/in-my-dna.svg"
+        },
+        {
+          "slug": "far-out",
+          "label": "Far out",
+          "title": "Far out",
+          "description": "A telescope pointing at a twinkling star",
+          "tags": [
+            "science",
+            "telescope",
+            "space",
+            "star",
+            "wow",
+            "amazed"
+          ],
+          "bg": "#4338CA",
+          "file": "svg/far-out.svg"
+        },
+        {
+          "slug": "oops",
+          "label": "Oops",
+          "title": "Oops",
+          "description": "A cartoon explosion puff",
+          "tags": [
+            "oops",
+            "explosion",
+            "fail",
+            "mistake",
+            "boom",
+            "sorry"
+          ],
+          "bg": "#EA580C",
+          "file": "svg/oops.svg"
+        },
+        {
+          "slug": "stonks",
+          "label": "Stonks",
+          "title": "Stonks",
+          "description": "A chart with an arrow going up",
+          "tags": [
+            "chart",
+            "growth",
+            "stonks",
+            "success",
+            "up",
+            "happy"
+          ],
+          "bg": "#16A34A",
+          "file": "svg/stonks.svg"
+        }
+      ]
+    },
+    {
+      "slug": "reactions",
+      "name": "Reactions",
+      "stickers": [
+        {
+          "slug": "lgtm",
+          "label": "LGTM",
+          "title": "LGTM",
+          "description": "A thumbs up approving the change",
+          "tags": [
+            "yes",
+            "approve",
+            "lgtm",
+            "thumbs up",
+            "ok",
+            "review"
+          ],
+          "bg": "#23A55A",
+          "file": "svg/lgtm.svg"
+        },
+        {
+          "slug": "shipped",
+          "label": "Shipped!",
+          "title": "Shipped!",
+          "description": "A party popper bursting with confetti",
+          "tags": [
+            "celebrate",
+            "party",
+            "shipped",
+            "release",
+            "congrats",
+            "happy"
+          ],
+          "bg": "#DB2777",
+          "file": "svg/shipped.svg"
+        },
+        {
+          "slug": "on-fire",
+          "label": "On fire",
+          "title": "On fire",
+          "description": "A flickering flame",
+          "tags": [
+            "fire",
+            "hot",
+            "awesome",
+            "streak",
+            "lit",
+            "celebrate"
+          ],
+          "bg": "#EA580C",
+          "file": "svg/on-fire.svg"
+        },
+        {
+          "slug": "brb-coffee",
+          "label": "Brb coffee",
+          "title": "Brb coffee",
+          "description": "A steaming cup of coffee",
+          "tags": [
+            "coffee",
+            "break",
+            "brb",
+            "morning",
+            "tired",
+            "away"
+          ],
+          "bg": "#92400E",
+          "file": "svg/brb-coffee.svg"
+        },
+        {
+          "slug": "cat-approved",
+          "label": "Cat approved",
+          "title": "Cat approved",
+          "description": "A happy cat nodding its approval",
+          "tags": [
+            "cat",
+            "yes",
+            "approve",
+            "happy",
+            "cute",
+            "ok"
+          ],
+          "bg": "#7C3AED",
+          "file": "svg/cat-approved.svg"
+        },
+        {
+          "slug": "launch",
+          "label": "Launch",
+          "title": "Launch",
+          "description": "A rocket blasting off",
+          "tags": [
+            "rocket",
+            "launch",
+            "ship",
+            "release",
+            "fast",
+            "celebrate"
+          ],
+          "bg": "#1D4ED8",
+          "file": "svg/launch.svg"
+        },
+        {
+          "slug": "on-it",
+          "label": "On it",
+          "title": "On it",
+          "description": "A blob in a hard hat saluting",
+          "tags": [
+            "ok",
+            "yes",
+            "on it",
+            "salute",
+            "working",
+            "busy"
+          ],
+          "bg": "#0F766E",
+          "file": "svg/on-it.svg"
+        },
+        {
+          "slug": "tomorrow",
+          "label": "Tomorrow",
+          "title": "Tomorrow",
+          "description": "A sleepy crescent moon snoozing",
+          "tags": [
+            "sleepy",
+            "tired",
+            "night",
+            "tomorrow",
+            "later",
+            "goodnight"
+          ],
+          "bg": "#475569",
+          "file": "svg/tomorrow.svg"
+        }
+      ]
+    },
+    {
+      "slug": "everyday",
+      "name": "Everyday",
+      "stickers": [
+        {
+          "slug": "hi",
+          "label": "Hi!",
+          "title": "Hi!",
+          "description": "A hand waving hello",
+          "tags": [
+            "hi",
+            "hello",
+            "wave",
+            "greeting",
+            "bye",
+            "happy"
+          ],
+          "bg": "#F59E0B",
+          "file": "svg/hi.svg"
+        },
+        {
+          "slug": "thanks",
+          "label": "Thanks",
+          "title": "Thanks",
+          "description": "A beating heart",
+          "tags": [
+            "thanks",
+            "love",
+            "heart",
+            "grateful",
+            "appreciate",
+            "happy"
+          ],
+          "bg": "#E11D48",
+          "file": "svg/thanks.svg"
+        },
+        {
+          "slug": "nice",
+          "label": "Nice",
+          "title": "Nice",
+          "description": "A smiling star with sparkles",
+          "tags": [
+            "nice",
+            "star",
+            "great",
+            "awesome",
+            "good job",
+            "happy"
+          ],
+          "bg": "#CA8A04",
+          "file": "svg/nice.svg"
+        },
+        {
+          "slug": "ack",
+          "label": "Ack",
+          "title": "Ack",
+          "description": "A check mark badge",
+          "tags": [
+            "ack",
+            "ok",
+            "yes",
+            "done",
+            "check",
+            "acknowledged"
+          ],
+          "bg": "#0D9488",
+          "file": "svg/ack.svg"
+        },
+        {
+          "slug": "hmm",
+          "label": "Hmm",
+          "title": "Hmm",
+          "description": "A blob thinking it over",
+          "tags": [
+            "hmm",
+            "thinking",
+            "wonder",
+            "unsure",
+            "maybe",
+            "curious"
+          ],
+          "bg": "#64748B",
+          "file": "svg/hmm.svg"
+        },
+        {
+          "slug": "ping",
+          "label": "Ping",
+          "title": "Ping",
+          "description": "A ringing bell",
+          "tags": [
+            "ping",
+            "bell",
+            "notification",
+            "reminder",
+            "attention",
+            "hey"
+          ],
+          "bg": "#F97316",
+          "file": "svg/ping.svg"
+        },
+        {
+          "slug": "bug",
+          "label": "Bug",
+          "title": "Bug",
+          "description": "A cute ladybug",
+          "tags": [
+            "bug",
+            "issue",
+            "ladybug",
+            "debug",
+            "no",
+            "broken"
+          ],
+          "bg": "#B91C1C",
+          "file": "svg/bug.svg"
+        },
+        {
+          "slug": "merged",
+          "label": "Merged",
+          "title": "Merged",
+          "description": "Two branches joining into one",
+          "tags": [
+            "merged",
+            "git",
+            "branch",
+            "done",
+            "yes",
+            "celebrate"
+          ],
+          "bg": "#7C3AED",
+          "file": "svg/merged.svg"
+        }
+      ]
+    }
+  ]
+}

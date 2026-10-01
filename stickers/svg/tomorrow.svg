@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Tomorrow</title>
+  <!-- Antimatter stickers, original artwork, CC BY 4.0 -->
+  <defs>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0f172a" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <g filter="url(#sh)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="-6 270 220;4 270 220;-6 270 220" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <g fill="#fff" stroke="#fff" stroke-width="30" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M300 60 C210 64 150 140 150 226 C150 312 220 376 306 376 C346 376 378 362 404 338 C300 344 230 280 230 196 C230 132 262 82 300 60 Z"/>
+      </g>
+      <path d="M300 60 C210 64 150 140 150 226 C150 312 220 376 306 376 C346 376 378 362 404 338 C300 344 230 280 230 196 C230 132 262 82 300 60 Z" fill="#FDE047"/>
+      <path d="M204 140 C180 180 178 250 210 300" fill="none" stroke="#FEF9C3" stroke-width="14" stroke-linecap="round"/>
+      <path d="M232 236 Q248 252 264 236" fill="none" stroke="#713F12" stroke-width="10" stroke-linecap="round"/>
+      <path d="M248 290 Q262 300 276 292" fill="none" stroke="#713F12" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="226" cy="268" rx="16" ry="9" fill="#FDBA74" opacity=".8"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 20;14 -16;0 20" dur="2.4s" repeatCount="indefinite" keyTimes="0;0.8;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <animate attributeName="opacity" values="0;1;0;0" dur="2.4s" repeatCount="indefinite" keyTimes="0;0.3;0.8;1"/>
+      <path d="M320 140 h36 l-36 36 h36" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M320 140 h36 l-36 36 h36" fill="none" stroke="#CBD5E1" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M366 92 h28 l-28 28 h28" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M366 92 h28 l-28 28 h28" fill="none" stroke="#CBD5E1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M404 52 h22 l-22 22 h22" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M404 52 h22 l-22 22 h22" fill="none" stroke="#CBD5E1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+  <g transform="rotate(-4 256 443)">
+    <rect x="120" y="419" width="272" height="62" rx="16" fill="#0f172a" opacity=".3"/>
+    <rect x="120" y="412" width="272" height="62" rx="16" fill="#475569" stroke="#fff" stroke-width="10"/>
+    <text x="256" y="458" text-anchor="middle" font-family="Figtree, 'Arial Black', Arial, sans-serif" font-weight="800" font-size="42" fill="#fff" textLength="216" lengthAdjust="spacingAndGlyphs">TOMORROW</text>
+  </g>
+</svg>

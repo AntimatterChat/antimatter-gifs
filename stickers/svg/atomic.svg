@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Atomic</title>
+  <!-- Antimatter stickers, original artwork, CC BY 4.0 -->
+  <defs>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0f172a" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <g filter="url(#sh)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="0 256 212;60 256 212;0 256 212" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <g fill="none">
+        <g stroke="#fff" stroke-width="36" stroke-linejoin="round" stroke-linecap="round">
+          <ellipse cx="256" cy="212" rx="150" ry="54" transform="rotate(0 256 212)"/>
+          <ellipse cx="256" cy="212" rx="150" ry="54" transform="rotate(60 256 212)"/>
+          <ellipse cx="256" cy="212" rx="150" ry="54" transform="rotate(120 256 212)"/>
+        </g>
+        <g stroke="#60A5FA" stroke-width="14">
+          <ellipse cx="256" cy="212" rx="150" ry="54" transform="rotate(0 256 212)"/>
+          <ellipse cx="256" cy="212" rx="150" ry="54" transform="rotate(60 256 212)"/>
+          <ellipse cx="256" cy="212" rx="150" ry="54" transform="rotate(120 256 212)"/>
+        </g>
+      </g>
+      <circle cx="406" cy="212" r="15" fill="#FDE047" stroke="#fff" stroke-width="6"/>
+      <circle cx="331" cy="341.9" r="15" fill="#FDE047" stroke="#fff" stroke-width="6"/>
+      <circle cx="181" cy="341.9" r="15" fill="#FDE047" stroke="#fff" stroke-width="6"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 0;-38.4 -31.8;0 0" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <animateTransform attributeName="transform" type="scale" values="1;1.1;1" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" additive="sum"/>
+      <circle cx="256" cy="212" r="46" fill="#fff"/>
+      <circle cx="256" cy="212" r="36" fill="#2563EB"/>
+      <circle cx="244" cy="200" r="11" fill="#93C5FD"/>
+    </g>
+  </g>
+  <g transform="rotate(-4 256 443)">
+    <rect x="147" y="419" width="218" height="62" rx="16" fill="#0f172a" opacity=".3"/>
+    <rect x="147" y="412" width="218" height="62" rx="16" fill="#2563EB" stroke="#fff" stroke-width="10"/>
+    <text x="256" y="458" text-anchor="middle" font-family="Figtree, 'Arial Black', Arial, sans-serif" font-weight="800" font-size="42" fill="#fff" textLength="162" lengthAdjust="spacingAndGlyphs">ATOMIC</text>
+  </g>
+</svg>

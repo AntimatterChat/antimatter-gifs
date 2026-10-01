@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Nice</title>
+  <!-- Antimatter stickers, original artwork, CC BY 4.0 -->
+  <defs>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0f172a" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <g filter="url(#sh)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="-10 256 216;10 256 216;-10 256 216" dur="2s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <g fill="#fff" stroke="#fff" stroke-width="34" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M256 60 L297.1 159.4 L404.4 167.8 L322.6 237.6 L347.7 342.2 L256 286 L164.3 342.2 L189.4 237.6 L107.6 167.8 L214.9 159.4 Z"/>
+      </g>
+      <path d="M256 60 L297.1 159.4 L404.4 167.8 L322.6 237.6 L347.7 342.2 L256 286 L164.3 342.2 L189.4 237.6 L107.6 167.8 L214.9 159.4 Z" fill="#FACC15" stroke="#FACC15" stroke-width="18" stroke-linejoin="round"/>
+      <path d="M256 106 L285.4 175.5 L360.6 182 L303.6 231.5 L320.7 305 L256 266 L191.3 305 L208.4 231.5 L151.4 182 L226.6 175.5 Z" fill="#FDE047" stroke="#FDE047" stroke-width="10" stroke-linejoin="round"/>
+      <ellipse cx="226" cy="214" rx="11" ry="16" fill="#713F12"/>
+      <ellipse cx="286" cy="214" rx="11" ry="16" fill="#713F12"/>
+      <path d="M232 250 Q256 272 280 250" fill="none" stroke="#713F12" stroke-width="10" stroke-linecap="round"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="46 48;-18.4 -19.2;46 48" dur="2s" repeatCount="indefinite" keyTimes="0;0.3;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <animateTransform attributeName="transform" type="scale" values="0.5;1.2;0.5" dur="2s" repeatCount="indefinite" keyTimes="0;0.3;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" additive="sum"/>
+      <path d="M92 68 L98.9 89.1 L120 96 L98.9 102.9 L92 124 L85.1 102.9 L64 96 L85.1 89.1 Z" fill="#fff" stroke="#CA8A04" stroke-width="4" stroke-linejoin="round"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="210 55;-84 -22;210 55" dur="2s" repeatCount="indefinite" keyTimes="0;0.6;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <animateTransform attributeName="transform" type="scale" values="0.5;1.2;0.5" dur="2s" repeatCount="indefinite" keyTimes="0;0.6;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" additive="sum"/>
+      <path d="M420 88 L425.4 104.6 L442 110 L425.4 115.4 L420 132 L414.6 115.4 L398 110 L414.6 104.6 Z" fill="#fff" stroke="#CA8A04" stroke-width="4" stroke-linejoin="round"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="210 165;-84 -66;210 165" dur="2s" repeatCount="indefinite" keyTimes="0;0.45;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <animateTransform attributeName="transform" type="scale" values="0.5;1.2;0.5" dur="2s" repeatCount="indefinite" keyTimes="0;0.45;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" additive="sum"/>
+      <path d="M420 312 L424.5 325.5 L438 330 L424.5 334.5 L420 348 L415.5 334.5 L402 330 L415.5 325.5 Z" fill="#fff" stroke="#CA8A04" stroke-width="4" stroke-linejoin="round"/>
+    </g>
+  </g>
+  <g transform="rotate(-4 256 443)">
+    <rect x="174" y="419" width="164" height="62" rx="16" fill="#0f172a" opacity=".3"/>
+    <rect x="174" y="412" width="164" height="62" rx="16" fill="#CA8A04" stroke="#fff" stroke-width="10"/>
+    <text x="256" y="458" text-anchor="middle" font-family="Figtree, 'Arial Black', Arial, sans-serif" font-weight="800" font-size="42" fill="#fff" textLength="108" lengthAdjust="spacingAndGlyphs">NICE</text>
+  </g>
+</svg>

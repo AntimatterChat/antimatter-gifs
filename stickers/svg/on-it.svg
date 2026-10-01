@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>On it</title>
+  <!-- Antimatter stickers, original artwork, CC BY 4.0 -->
+  <defs>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0f172a" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <g filter="url(#sh)">
+    <g fill="#fff" stroke="#fff" stroke-width="30" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M256 120 C340 120 380 190 380 262 C380 330 330 368 256 368 C182 368 132 330 132 262 C132 190 172 120 256 120 Z"/>
+    </g>
+    <g fill="#5EEAD4">
+      <path d="M256 120 C340 120 380 190 380 262 C380 330 330 368 256 368 C182 368 132 330 132 262 C132 190 172 120 256 120 Z"/>
+    </g>
+    <path d="M150 150 C150 70 362 70 362 150 Z" fill="#fff" stroke="#fff" stroke-width="28" stroke-linejoin="round"/>
+    <path d="M150 150 C150 70 362 70 362 150 Z" fill="#FBBF24"/>
+    <rect x="128" y="140" width="256" height="30" rx="15" fill="#F59E0B"/>
+    <rect x="244" y="74" width="24" height="70" rx="10" fill="#FCD34D"/>
+    <ellipse cx="216" cy="240" rx="14" ry="20" fill="#134E4A"/>
+    <path d="M282 244 Q298 226 314 244" fill="none" stroke="#134E4A" stroke-width="12" stroke-linecap="round"/>
+    <path d="M226 292 Q256 316 286 292" fill="none" stroke="#134E4A" stroke-width="10" stroke-linecap="round"/>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="0 352 300;-12 352 300;0 352 300" dur="1.6s" repeatCount="indefinite" keyTimes="0;0.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>
+      <g fill="#fff" stroke="#fff" stroke-width="28" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M352 300 Q404 250 388 180" fill="none" stroke-width="66"/>
+        <ellipse cx="372" cy="164" rx="40" ry="22" transform="rotate(-20 372 164)"/>
+      </g>
+      <path d="M352 300 Q404 250 388 180" fill="none" stroke="#2DD4BF" stroke-width="38" stroke-linecap="round"/>
+      <ellipse cx="372" cy="164" rx="38" ry="20" transform="rotate(-20 372 164)" fill="#5EEAD4" stroke="#2DD4BF" stroke-width="6"/>
+    </g>
+  </g>
+  <g transform="rotate(-4 256 443)">
+    <rect x="160.5" y="419" width="191" height="62" rx="16" fill="#0f172a" opacity=".3"/>
+    <rect x="160.5" y="412" width="191" height="62" rx="16" fill="#0F766E" stroke="#fff" stroke-width="10"/>
+    <text x="256" y="458" text-anchor="middle" font-family="Figtree, 'Arial Black', Arial, sans-serif" font-weight="800" font-size="42" fill="#fff" textLength="135" lengthAdjust="spacingAndGlyphs">ON IT</text>
+  </g>
+</svg>

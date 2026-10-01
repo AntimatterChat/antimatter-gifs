@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>On fire</title>
+  <!-- Antimatter stickers, original artwork, CC BY 4.0 -->
+  <defs>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0f172a" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <g filter="url(#sh)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 0;12.8 -22.3;-7.7 11.2;0 0" dur="1.2s" repeatCount="indefinite" keyTimes="0;0.4;0.7;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1;.45 0 .55 1"/>
+      <animateTransform attributeName="transform" type="scale" values="1;0.9 1.1;1 1;1" dur="1.2s" repeatCount="indefinite" keyTimes="0;0.4;0.7;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1;.45 0 .55 1" additive="sum"/>
+      <g fill="#fff" stroke="#fff" stroke-width="30" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M256 372 C164 372 132 300 160 236 C178 196 210 180 206 120 C250 146 268 186 262 222 C286 206 290 176 284 150 C350 196 372 260 352 312 C338 350 304 372 256 372 Z"/>
+      </g>
+      <path d="M256 372 C164 372 132 300 160 236 C178 196 210 180 206 120 C250 146 268 186 262 222 C286 206 290 176 284 150 C350 196 372 260 352 312 C338 350 304 372 256 372 Z" fill="#EA580C"/>
+      <path d="M240 168 C250 190 248 206 236 230" fill="none" stroke="#FB923C" stroke-width="12" stroke-linecap="round"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 0;-15.4 36.2;10.2 -29;0 0" dur="1.2s" repeatCount="indefinite" keyTimes="0;0.3;0.65;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1;.45 0 .55 1"/>
+      <animateTransform attributeName="transform" type="scale" values="1;1.1 0.9;1 1.1;1" dur="1.2s" repeatCount="indefinite" keyTimes="0;0.3;0.65;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1;.45 0 .55 1" additive="sum"/>
+      <path d="M256 362 C214 362 196 330 208 300 C218 276 240 268 244 236 C266 256 276 280 270 300 C284 292 290 280 292 268 C314 296 314 330 296 348 C286 358 272 362 256 362 Z" fill="#FACC15"/>
+      <path d="M256 352 C232 352 224 334 232 318 C240 304 252 300 256 286 C272 302 280 322 272 338 C268 346 262 352 256 352 Z" fill="#FEF9C3"/>
+    </g>
+  </g>
+  <g transform="rotate(-4 256 443)">
+    <rect x="133.5" y="419" width="245" height="62" rx="16" fill="#0f172a" opacity=".3"/>
+    <rect x="133.5" y="412" width="245" height="62" rx="16" fill="#EA580C" stroke="#fff" stroke-width="10"/>
+    <text x="256" y="458" text-anchor="middle" font-family="Figtree, 'Arial Black', Arial, sans-serif" font-weight="800" font-size="42" fill="#fff" textLength="189" lengthAdjust="spacingAndGlyphs">ON FIRE</text>
+  </g>
+</svg>
