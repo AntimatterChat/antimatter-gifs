@@ -86,23 +86,6 @@ type errorBody struct {
 	Status  string `json:"status"`
 }
 
-// Media formats, from the Tenor documentation.
-var (
-	gifFormats = []string{"preview", "gif", "mediumgif", "tinygif", "nanogif", "mp4", "loopedmp4", "tinymp4",
-		"nanomp4", "webm", "tinywebm", "nanowebm", "webp", "tinywebp", "nanowebp", "gifpreview", "tinygifpreview",
-		"nanogifpreview"}
-	stickerFormats = []string{"webp_transparent", "tinywebp_transparent", "nanowebp_transparent",
-		"gif_transparent", "tinygif_transparent", "nanogif_transparent"}
-	// KnownFormats are the format names accepted for media files.
-	KnownFormats = func() map[string]bool {
-		m := map[string]bool{}
-		for _, f := range append(append([]string{}, gifFormats...), stickerFormats...) {
-			m[f] = true
-		}
-		return m
-	}()
-)
-
 // tileFormats are the formats used for category images, best first.
 var tileFormats = map[string][]string{
 	index.KindGIF:     {"tinygif", "gif", "mediumgif", "nanogif", "preview"},
