@@ -19,14 +19,13 @@ The Antimatter GIFs plugin (`antimatter-plugin-gifs`) uses it for its GIF and st
 
 ## Quick start
 
-With Docker:
+With Docker (see [Docker image](#docker-image)):
 
 ```sh
-docker build -t antimatter-gifs .
 docker volume create gifs-data
-docker run --rm -v gifs-data:/data antimatter-gifs stickers        # import the sticker pack
+docker run --rm -v gifs-data:/data ghcr.io/antimatterchat/antimatter-gifs stickers   # import the sticker pack
 docker run -d --name gifs -p 8080:8080 -v gifs-data:/data \
-    -e AM_GIFS_API_KEYS=change-me antimatter-gifs
+    -e AM_GIFS_API_KEYS=change-me ghcr.io/antimatterchat/antimatter-gifs
 curl 'http://localhost:8080/v2/featured?key=change-me&searchfilter=sticker&limit=2'
 ```
 
@@ -51,6 +50,52 @@ Install the GIFs plugin and set, in **System Console > Plugins > GIFs**:
   Antimatter server talks to the service (the plugin proxies the API and the media), so the service
   doesn't need to be public.
 - **API key**: one of `AM_GIFS_API_KEYS`.
+
+## Docker image
+
+`ghcr.io/antimatterchat/antimatter-gifs`, for `linux/amd64` and `linux/arm64`. Tags: `latest`
+(the `antimatter` branch), `X.Y.Z` and `X.Y` (releases, from `vX.Y.Z` tags) and `sha-<commit>`.
+Pin a version in production. `docker build -t antimatter-gifs .` builds the same image locally.
+
+- **Command**: the entrypoint is `antimatter-gifs` and the default command `serve`, so
+  `docker run IMAGE` runs the service and `docker run IMAGE <command>` runs any other command
+  (`stickers`, `import`, `fetch-tenor`, `delete`, `healthcheck`) on the same data.
+- **Port** 8080 (the API, `/media/` and `/healthz`).
+- **Volume** `/data`: the index and the media, everything to back up. The service runs as the
+  unprivileged user `gifs` (uid 10001); a named volume gets the right owner automatically, a bind
+  mount needs `chown -R 10001 <dir>` first. The image also runs with a read-only root filesystem
+  (`--read-only --tmpfs /tmp`).
+- **Environment**: any variable of [Configuration](#configuration). The image sets
+  `AM_GIFS_DATA_DIR=/data`, `AM_GIFS_LISTEN=:8080` and `AM_GIFS_STICKER_PACK` (the bundled pack).
+- **Health check**: `antimatter-gifs healthcheck` against `/healthz` (no curl needed), so
+  `docker ps` and compose's `service_healthy` work.
+- **Media tools**: ffmpeg, gifsicle, rsvg-convert and fonts, for imports and uploads.
+
+**First run.** A new volume has an empty catalogue: import the bundled sticker pack once (about a
+minute and a half; the sticker files and `pack.json` are in the image under
+`/usr/share/antimatter-gifs/stickers`):
+
+```sh
+docker run --rm -v gifs-data:/data ghcr.io/antimatterchat/antimatter-gifs stickers
+```
+
+Running it again updates the stickers in place (e.g. after an upgrade that changes the pack). It
+can run while the service is up. Import your own GIFs the same way, with their directory mounted:
+
+```sh
+docker run --rm -v gifs-data:/data -v "$PWD/gifs:/import:ro" ghcr.io/antimatterchat/antimatter-gifs \
+    import -manifest /import/manifest.json
+```
+
+**API keys.** Without `AM_GIFS_API_KEYS` the API is open to anyone who can reach it: always set
+a key, even when only Antimatter can reach the service. Generate one with `openssl rand -hex 32`,
+give it to the service and to the GIFs plugin (*API key*); several keys, comma-separated, let you
+rotate them. Upload keys (`AM_GIFS_UPLOAD_KEYS`) are separate and only for the plugin's *Upload
+key*. With Docker secrets, use the `_FILE` variants (`AM_GIFS_API_KEYS_FILE=/run/secrets/...`).
+
+A complete deployment with Antimatter, PostgreSQL and nginx, where the service is only reachable by
+the Antimatter server, is in
+[antimatter-docker](https://github.com/AntimatterChat/antimatter-docker/tree/main/deploy/compose).
 
 ## Configuration
 
@@ -237,6 +282,11 @@ antimatter-gifs fetch-tenor -featured 200 -categories 12 -per-category 12 -stick
 go test ./...        # the media tests use ffmpeg and rsvg-convert when installed
 go vet ./...
 ```
+
+The *Build the image* workflow (`.github/workflows/image.yml`) runs the tests and then publishes
+the image: on pushes to `antimatter` (`latest`), on `v*` tags (the version) and on manual runs
+(optional extra tag). Pull requests only build it. Make the package public in the organisation's
+package settings for anonymous pulls.
 
 Layout: `cmd/antimatter-gifs` (commands), `internal/api` (HTTP API), `internal/index` (SQLite
 index and search), `internal/importer` (manifests, sticker packs), `internal/media` (formats),
