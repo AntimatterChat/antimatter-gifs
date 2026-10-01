@@ -1,16 +1,23 @@
+# syntax=docker/dockerfile:1
+#
 # antimatter-gifs: the GIF and sticker service.
 #
 #   docker build -t antimatter-gifs .
 #   docker run -d -p 8080:8080 -v gifs-data:/data -e AM_GIFS_API_KEYS=changeme antimatter-gifs
 #   docker run --rm -v gifs-data:/data antimatter-gifs stickers   # import the sticker pack
 
-FROM golang:1.26-alpine AS build
+# The binary is pure Go: build it on the build machine's platform and cross-compile it for the
+# target one, so multi-platform builds don't run the Go toolchain under emulation.
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS build
+ARG TARGETOS
+ARG TARGETARCH
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY cmd ./cmd
 COPY internal ./internal
-RUN CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o /out/antimatter-gifs ./cmd/antimatter-gifs
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -trimpath -ldflags "-s -w" -o /out/antimatter-gifs ./cmd/antimatter-gifs
 
 FROM alpine:3.22
 # ffmpeg, gifsicle and rsvg-convert generate the GIF, video and sticker formats at import; the
