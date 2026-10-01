@@ -70,7 +70,7 @@ func TestImport(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if stats != (Stats{Added: 3, Failed: 2}) {
+	if stats.Added != 3 || stats.Updated != 0 || stats.Failed != 2 || len(stats.IDs) != 3 {
 		t.Fatalf("stats %+v", stats)
 	}
 
@@ -119,7 +119,7 @@ func TestImport(t *testing.T) {
 	m.Items = m.Items[:1]
 	m.Items[0].Title = "Happier cat"
 	stats, err = im.Import(ctx, m)
-	if err != nil || stats != (Stats{Updated: 1}) {
+	if err != nil || stats.Added != 0 || stats.Updated != 1 || stats.Failed != 0 || stats.IDs[0] != id {
 		t.Fatalf("re-import: %+v %v", stats, err)
 	}
 	posts, _ = store.GetPosts(ctx, []string{id})

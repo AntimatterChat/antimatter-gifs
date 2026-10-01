@@ -380,6 +380,37 @@ func (s *Store) SetCategory(ctx context.Context, c Category, postIDs []string) e
 	})
 }
 
+// AddToCategory appends posts to a category, creating it when it doesn't exist.
+func (s *Store) AddToCategory(ctx context.Context, c Category, postIDs []string) error {
+	c.SearchTerm = NormalizeTerm(c.SearchTerm)
+	if c.SearchTerm == "" || (c.Kind != KindGIF && c.Kind != KindSticker) {
+		return fmt.Errorf("invalid category %q of kind %q", c.SearchTerm, c.Kind)
+	}
+	if c.Name == "" {
+		c.Name = c.SearchTerm
+	}
+	return s.tx(ctx, func(tx *sql.Tx) error {
+		var id int64
+		err := tx.QueryRowContext(ctx, `
+			INSERT INTO categories (kind, name, searchterm, position)
+			VALUES (?, ?, ?, (SELECT COALESCE(MAX(position) + 1, 0) FROM categories WHERE kind = ?))
+			ON CONFLICT (kind, searchterm) DO UPDATE SET name = name
+			RETURNING id`, c.Kind, c.Name, c.SearchTerm, c.Kind).Scan(&id)
+		if err != nil {
+			return err
+		}
+		for _, postID := range postIDs {
+			if _, err := tx.ExecContext(ctx, `
+				INSERT OR IGNORE INTO category_posts (category_id, post_id, position)
+				VALUES (?, ?, (SELECT COALESCE(MAX(position) + 1, 0) FROM category_posts WHERE category_id = ?))`,
+				id, postID, id); err != nil {
+				return fmt.Errorf("adding %s to category %q: %w", postID, c.SearchTerm, err)
+			}
+		}
+		return nil
+	})
+}
+
 // Categories returns the categories of a kind with their tile post (the image post, else the first
 // member), in order. Categories without posts are skipped.
 func (s *Store) Categories(ctx context.Context, kind string) ([]Category, error) {

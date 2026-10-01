@@ -157,6 +157,22 @@ func TestCategoriesComeFirstForTheirTerm(t *testing.T) {
 	if !equal(ids(got), []string{"b", "a"}) {
 		t.Fatalf("search party = %v", ids(got))
 	}
+
+	addPost(t, s, &Post{ID: "c", Title: "Streamers"})
+	if err := s.AddToCategory(ctx, Category{Kind: KindGIF, SearchTerm: "party"}, []string{"c", "b"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.AddToCategory(ctx, Category{Kind: KindGIF, SearchTerm: "Fresh"}, []string{"a"}); err != nil {
+		t.Fatal(err)
+	}
+	got, _, _ = s.Search(ctx, "party", Filter{Kind: KindGIF}, 0, 10, now)
+	if !equal(ids(got), []string{"b", "a", "c"}) {
+		t.Fatalf("search party after adding = %v", ids(got))
+	}
+	cats, _ = s.Categories(ctx, KindGIF)
+	if len(cats) != 2 || cats[1].SearchTerm != "fresh" || cats[1].Name != "fresh" || cats[1].Position != 2 {
+		t.Fatalf("categories after adding = %+v", cats)
+	}
 }
 
 func TestFeaturedAndTrending(t *testing.T) {

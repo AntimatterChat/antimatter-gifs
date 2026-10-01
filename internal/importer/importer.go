@@ -108,6 +108,8 @@ type Importer struct {
 // Stats counts the outcome of an import.
 type Stats struct {
 	Added, Updated, Failed int
+	// IDs are the IDs of the imported posts, in the order of the manifest.
+	IDs []string
 }
 
 // Import imports the items of the manifest, then its categories. Failed items are logged and
@@ -132,6 +134,7 @@ func (im *Importer) Import(ctx context.Context, m *Manifest) (Stats, error) {
 			im.Logger.Error("import failed", "item", firstNonEmpty(item.Key, item.SourceID, item.File, item.Title), "error", err)
 			continue
 		}
+		stats.IDs = append(stats.IDs, id)
 		if added {
 			stats.Added++
 		} else {
