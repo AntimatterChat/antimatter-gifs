@@ -13,8 +13,10 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/antimatterchat/antimatter-gifs/internal/importer"
 	"github.com/antimatterchat/antimatter-gifs/internal/index"
 )
 
@@ -38,7 +40,13 @@ type Config struct {
 	RateBurst int
 	// TrustProxy uses the X-Forwarded-For/-Proto/-Host headers of a reverse proxy.
 	TrustProxy bool
-	Logger     *slog.Logger
+	// UploadKeys are the keys of the clients allowed to add GIFs and stickers with POST
+	// /v2/upload (Authorization: Bearer <key>), which Importer converts; no uploads when empty.
+	UploadKeys []string
+	Importer   *importer.Importer
+	// UploadMaxBytes is the largest uploaded file; DefaultUploadMaxBytes when zero.
+	UploadMaxBytes int64
+	Logger         *slog.Logger
 	// Now returns the current time; time.Now when nil (tests set it).
 	Now func() time.Time
 }
@@ -50,6 +58,9 @@ type Server struct {
 	log     *slog.Logger
 	limiter *limiter
 	keys    [][]byte
+
+	uploadKeys [][]byte
+	uploadMu   sync.Mutex
 }
 
 // New returns a server over the store.
@@ -68,6 +79,11 @@ func New(store *index.Store, cfg Config) *Server {
 	for _, k := range cfg.APIKeys {
 		if k = strings.TrimSpace(k); k != "" {
 			s.keys = append(s.keys, []byte(k))
+		}
+	}
+	for _, k := range cfg.UploadKeys {
+		if k = strings.TrimSpace(k); k != "" {
+			s.uploadKeys = append(s.uploadKeys, []byte(k))
 		}
 	}
 	if cfg.RateLimit > 0 {
@@ -94,6 +110,8 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("/v2/trending_terms", api(s.handleTrendingTerms))
 	mux.Handle("/v2/registershare", api(s.handleRegisterShare))
 	mux.Handle("/v2/posts", api(s.handlePosts))
+	// Not a Tenor endpoint: trusted clients (the Antimatter GIFs plugin) add GIFs and stickers.
+	mux.Handle("POST /v2/upload", s.rateLimit(s.requireUploadKey(http.HandlerFunc(s.handleUpload))))
 	mux.Handle("/v2/", s.cors(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "NOT_FOUND", "Unknown endpoint.")
 	})))
