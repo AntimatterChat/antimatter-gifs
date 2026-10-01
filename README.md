@@ -70,6 +70,9 @@ Install the GIFs plugin and set, in **System Console > Plugins > GIFs**:
 | `-rate-limit` | `AM_GIFS_RATE_LIMIT` | `20` | API requests per second per client (API key + IP); `0` disables. |
 | `-rate-burst` | `AM_GIFS_RATE_BURST` | `60` | Burst size per client. |
 | `-trust-proxy` | `AM_GIFS_TRUST_PROXY` | `false` | Use `X-Forwarded-For/-Proto/-Host` (behind a reverse proxy only). |
+| `-upload-keys` | `AM_GIFS_UPLOAD_KEYS` | none | Comma-separated keys of the clients allowed to upload GIFs and stickers (see [Uploads](#uploads)). No uploads without keys. |
+| `-upload-keys-file` | `AM_GIFS_UPLOAD_KEYS_FILE` | | A file with one upload key per line. |
+| `-upload-max-mb` | `AM_GIFS_UPLOAD_MAX_MB` | `16` | Largest uploaded file. |
 | `-log-level` | `AM_GIFS_LOG_LEVEL` | `info` | `debug` logs every request (path and status only: queries hold keys and search terms). |
 
 The key is read from the `key` parameter, like Tenor, or the `X-Goog-Api-Key` header. Missing and
@@ -114,6 +117,27 @@ Base path `/v2`. Requests and responses follow Tenor's documentation:
   scaled by the share of query words matched, plus a small boost for curated score and recent shares.
 - Shares and searches are only counted per post/term and day (90 days kept); nothing about users or
   clients is stored.
+
+### Uploads
+
+`POST /v2/upload` (not part of the Tenor API) lets a trusted client, such as the Antimatter GIFs
+plugin, add GIFs and stickers. It needs one of the upload keys as `Authorization: Bearer <key>` (the
+API keys don't work) and only exists when upload keys are set. The request is `multipart/form-data`:
+
+| Field | Meaning |
+| --- | --- |
+| `file` (required) | GIFs: GIF, PNG (APNG), WebP, MP4 or WebM; stickers: PNG, WebP, GIF or SVG (animated with the subset of SMIL of the sticker pack). The type is read from the content. |
+| `kind` | `gif` (default) or `sticker` |
+| `title` (required) | Up to 100 characters. |
+| `tags` | Comma-separated, up to 20 (40 characters each). |
+| `description`, `attribution` | Optional texts. |
+| `rating` | `g` (default), `pg`, `pg-13` or `r`. |
+| `pack` | Stickers: the sticker pack (category) to add the sticker to, created if needed. |
+
+The file is converted like imported files (one upload at a time) and the answer is the new post,
+`{"results": [RESPONSE_OBJECT]}`, with all its formats. Uploading the same file again updates its
+post. Errors: `400` (invalid field or file type), `403` (missing or invalid key), `413` (file too
+large), `422` (the file can't be converted).
 
 Other routes: `GET /media/...` (media files, cacheable, sandboxed by a CSP), `GET /view/{id}` (a page
 per post, with attribution), `GET /healthz` (`{"status": "ok", "posts": n}`, `503` when the index

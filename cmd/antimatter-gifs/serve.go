@@ -16,7 +16,9 @@ import (
 	"time"
 
 	"github.com/antimatterchat/antimatter-gifs/internal/api"
+	"github.com/antimatterchat/antimatter-gifs/internal/importer"
 	"github.com/antimatterchat/antimatter-gifs/internal/index"
+	"github.com/antimatterchat/antimatter-gifs/internal/media"
 )
 
 // statsRetention is how long share and search statistics are kept.
@@ -34,6 +36,10 @@ func serve(ctx context.Context, args []string) error {
 	rate := fs.Float64("rate-limit", envFloat("RATE_LIMIT", 20), "API requests per second per client, 0 to disable (AM_GIFS_RATE_LIMIT)")
 	burst := fs.Int("rate-burst", int(envFloat("RATE_BURST", 60)), "API request bursts per client (AM_GIFS_RATE_BURST)")
 	trustProxy := fs.Bool("trust-proxy", envBool("TRUST_PROXY", false), "use the X-Forwarded-* headers of a reverse proxy (AM_GIFS_TRUST_PROXY)")
+	uploadKeys := fs.String("upload-keys", env("UPLOAD_KEYS", ""), "comma-separated keys of the clients allowed to upload GIFs and stickers; no uploads when empty (AM_GIFS_UPLOAD_KEYS)")
+	uploadKeysFile := fs.String("upload-keys-file", env("UPLOAD_KEYS_FILE", ""), "file with one upload key per line (AM_GIFS_UPLOAD_KEYS_FILE)")
+	uploadMaxMB := fs.Int("upload-max-mb", int(envFloat("UPLOAD_MAX_MB", api.DefaultUploadMaxBytes>>20)), "largest uploaded file in MB (AM_GIFS_UPLOAD_MAX_MB)")
+	fps := fs.Int("fps", 20, "frame rate of uploaded SVG stickers")
 	fs.Parse(args)
 
 	store, err := st.open()
@@ -53,6 +59,26 @@ func serve(ctx context.Context, args []string) error {
 	if len(apiKeys) == 0 {
 		slog.Warn("no API key configured: the API is open to anyone who can reach it")
 	}
+	upKeys := splitComma(*uploadKeys)
+	if *uploadKeysFile != "" {
+		fileKeys, err := readKeys(*uploadKeysFile)
+		if err != nil {
+			return err
+		}
+		upKeys = append(upKeys, fileKeys...)
+	}
+	var uploads *importer.Importer
+	if len(upKeys) > 0 {
+		tools := media.DetectTools(ctx)
+		slog.Info("uploads are on", "media tools", tools.String())
+		uploads = &importer.Importer{
+			Store:    store,
+			MediaDir: st.mediaDir(),
+			Tools:    tools,
+			Options:  media.Options{FPS: *fps, Logger: slog.Default()},
+			Logger:   slog.Default(),
+		}
+	}
 	n, err := store.Ping(ctx)
 	if err != nil {
 		return err
@@ -71,6 +97,10 @@ func serve(ctx context.Context, args []string) error {
 		RateBurst:   *burst,
 		TrustProxy:  *trustProxy,
 		Logger:      slog.Default(),
+
+		UploadKeys:     upKeys,
+		Importer:       uploads,
+		UploadMaxBytes: int64(*uploadMaxMB) << 20,
 	})
 	httpServer := &http.Server{
 		Addr:              *listen,
