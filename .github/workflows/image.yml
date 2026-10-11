@@ -5,7 +5,7 @@ name: Build the image
 # build publishes `sha-<commit>`; pull requests only build.
 on:
   push:
-    branches: [antimatter]
+    branches: [main]
     tags: ["v*"]
   pull_request:
   workflow_dispatch:
