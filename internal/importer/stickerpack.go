@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/index"
 )
 
 // stickerPack is the pack.json of a directory of SVG stickers (see stickers/ in the repository).

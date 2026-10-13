@@ -16,7 +16,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/index"
 )
 
 var now = time.Date(2026, 10, 1, 12, 0, 0, 0, time.UTC)

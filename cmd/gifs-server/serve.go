@@ -15,10 +15,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/api"
-	"github.com/antimatterchat/antimatter-gifs/internal/importer"
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
-	"github.com/antimatterchat/antimatter-gifs/internal/media"
+	"github.com/antimatterchat/gifs-server/internal/api"
+	"github.com/antimatterchat/gifs-server/internal/importer"
+	"github.com/antimatterchat/gifs-server/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/media"
 )
 
 // statsRetention is how long share and search statistics are kept.
@@ -84,7 +84,7 @@ func serve(ctx context.Context, args []string) error {
 		return err
 	}
 	if n == 0 {
-		slog.Warn("the index is empty: import GIFs and stickers (antimatter-gifs stickers, import, fetch-tenor)")
+		slog.Warn("the index is empty: import GIFs and stickers (gifs-server stickers, import, fetch-tenor)")
 	}
 
 	srv := api.New(store, api.Config{

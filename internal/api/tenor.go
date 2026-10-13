@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/index"
 )
 
 // The JSON shapes of the Tenor API v2 (https://developers.google.com/tenor/guides/response-objects-and-errors).

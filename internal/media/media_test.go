@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/index"
 )
 
 // writeGIF writes a 3 frames 300x200 GIF lasting 0.3 s.

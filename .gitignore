@@ -1,6 +1,6 @@
 # Built binaries
 /bin/
-/antimatter-gifs
+/gifs-server
 
 # Index, media and fetched third-party content: never committed (see README)
 /data/

@@ -25,8 +25,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
-	"github.com/antimatterchat/antimatter-gifs/internal/svgframes"
+	"github.com/antimatterchat/gifs-server/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/svgframes"
 )
 
 // Tools are the external programs used to generate formats; empty paths are missing tools.
@@ -149,7 +149,7 @@ func Generate(ctx context.Context, tools Tools, src, kind, dir, rel string, opts
 		if tools.RSVG == "" || tools.FFmpeg == "" {
 			return nil, fmt.Errorf("%w: rendering SVG stickers needs rsvg-convert and ffmpeg", ErrUnsupported)
 		}
-		frames, err := os.MkdirTemp("", "antimatter-gifs-frames-")
+		frames, err := os.MkdirTemp("", "gifs-server-frames-")
 		if err != nil {
 			return nil, err
 		}

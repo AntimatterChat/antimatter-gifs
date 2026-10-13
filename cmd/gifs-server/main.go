@@ -1,7 +1,7 @@
 // Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE for license information.
 
-// Command antimatter-gifs runs the GIF and sticker service and manages its catalogue.
+// Command gifs-server runs the GIF and sticker service and manages its catalogue.
 package main
 
 import (
@@ -18,21 +18,21 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/index"
 )
 
-const usage = `antimatter-gifs: a self-hosted GIF and sticker service with the Tenor API v2.
+const usage = `gifs-server: a self-hosted GIF and sticker service with the Tenor API v2.
 
 Usage:
-  antimatter-gifs serve [flags]               run the service
-  antimatter-gifs import [flags] FILE...      import GIFs or stickers (-sticker)
-  antimatter-gifs import -manifest FILE       import a manifest (see README)
-  antimatter-gifs stickers [-pack FILE]       import a sticker pack (default stickers/pack.json)
-  antimatter-gifs fetch-tenor [flags]         download a starter dataset from Tenor (TENOR_API_KEY)
-  antimatter-gifs delete ID...                delete posts
-  antimatter-gifs healthcheck [-url URL]      check a running service (for containers)
+  gifs-server serve [flags]               run the service
+  gifs-server import [flags] FILE...      import GIFs or stickers (-sticker)
+  gifs-server import -manifest FILE       import a manifest (see README)
+  gifs-server stickers [-pack FILE]       import a sticker pack (default stickers/pack.json)
+  gifs-server fetch-tenor [flags]         download a starter dataset from Tenor (TENOR_API_KEY)
+  gifs-server delete ID...                delete posts
+  gifs-server healthcheck [-url URL]      check a running service (for containers)
 
-Run "antimatter-gifs COMMAND -h" for the flags of a command. Flags default to AM_GIFS_*
+Run "gifs-server COMMAND -h" for the flags of a command. Flags default to AM_GIFS_*
 environment variables, e.g. AM_GIFS_DATA_DIR for -data.
 `
 

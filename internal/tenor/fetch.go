@@ -22,8 +22,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/importer"
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/importer"
+	"github.com/antimatterchat/gifs-server/internal/index"
 )
 
 // DefaultBaseURL is the Tenor API v2.
@@ -194,7 +194,7 @@ func (f *Fetcher) defaults() {
 	}
 	f.BaseURL = strings.TrimSuffix(f.BaseURL, "/")
 	if f.ClientKey == "" {
-		f.ClientKey = "antimatter-gifs"
+		f.ClientKey = "gifs-server"
 	}
 	if f.ContentFilter == "" {
 		f.ContentFilter = "medium"

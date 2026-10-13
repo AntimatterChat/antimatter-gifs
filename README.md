@@ -1,9 +1,12 @@
-# antimatter-gifs
+# gifs-server
 
-A self-hosted GIF and sticker service for Antimatter that speaks the
+A self-hosted GIF and sticker server that speaks the
 [Tenor API v2](https://developers.google.com/tenor/guides/endpoints), so existing Tenor clients can
 use it by changing their base URL (`https://tenor.googleapis.com/v2` → `https://gifs.example.com/v2`).
-The Antimatter GIFs plugin (`antimatter-plugin-gifs`) uses it for its GIF and sticker picker.
+It isn't tied to any chat app; the Antimatter GIFs plugin (`antimatter-plugin-gifs`) uses it for its
+GIF and sticker picker. It was called `antimatter-gifs` until October 2026: the old image,
+`ghcr.io/antimatterchat/antimatter-gifs`, no longer gets updates, so switch to
+`ghcr.io/antimatterchat/gifs-server` (same data volume, same settings).
 
 - **Tenor API v2**: `search`, `featured`, `categories`, `search_suggestions`, `autocomplete`,
   `trending_terms`, `registershare` and `posts`, with Tenor's parameters and JSON (see below).
@@ -23,9 +26,9 @@ With Docker (see [Docker image](#docker-image)):
 
 ```sh
 docker volume create gifs-data
-docker run --rm -v gifs-data:/data ghcr.io/antimatterchat/antimatter-gifs stickers   # import the sticker pack
+docker run --rm -v gifs-data:/data ghcr.io/antimatterchat/gifs-server stickers   # import the sticker pack
 docker run -d --name gifs -p 8080:8080 -v gifs-data:/data \
-    -e AM_GIFS_API_KEYS=change-me ghcr.io/antimatterchat/antimatter-gifs
+    -e AM_GIFS_API_KEYS=change-me ghcr.io/antimatterchat/gifs-server
 curl 'http://localhost:8080/v2/featured?key=change-me&searchfilter=sticker&limit=2'
 ```
 
@@ -33,10 +36,10 @@ From the sources (Go 1.25+; ffmpeg, gifsicle and rsvg-convert are optional, see
 [Formats](#formats)):
 
 ```sh
-go build -o bin/antimatter-gifs ./cmd/antimatter-gifs
-bin/antimatter-gifs stickers                  # imports stickers/pack.json into ./data
-bin/antimatter-gifs import -tags cat,happy -category cats ~/Pictures/happy-cat.gif
-bin/antimatter-gifs serve                     # http://localhost:8080, no API key needed
+go build -o bin/gifs-server ./cmd/gifs-server
+bin/gifs-server stickers                  # imports stickers/pack.json into ./data
+bin/gifs-server import -tags cat,happy -category cats ~/Pictures/happy-cat.gif
+bin/gifs-server serve                     # http://localhost:8080, no API key needed
 ```
 
 Everything lives in the data directory (`./data`, `/data` in the image): `index.db` and `media/`.
@@ -46,18 +49,18 @@ Back it up as a whole.
 
 Install the GIFs plugin and set, in **System Console > Plugins > GIFs**:
 
-- **GIF service URL**: the service's API base, e.g. `http://antimatter-gifs:8080/v2`. Only the
+- **GIF service URL**: the service's API base, e.g. `http://gifs-server:8080/v2`. Only the
   Antimatter server talks to the service (the plugin proxies the API and the media), so the service
   doesn't need to be public.
 - **API key**: one of `AM_GIFS_API_KEYS`.
 
 ## Docker image
 
-`ghcr.io/antimatterchat/antimatter-gifs`, for `linux/amd64` and `linux/arm64`. Tags: `latest`
+`ghcr.io/antimatterchat/gifs-server`, for `linux/amd64` and `linux/arm64`. Tags: `latest`
 (the `antimatter` branch), `X.Y.Z` and `X.Y` (releases, from `vX.Y.Z` tags) and `sha-<commit>`.
-Pin a version in production. `docker build -t antimatter-gifs .` builds the same image locally.
+Pin a version in production. `docker build -t gifs-server .` builds the same image locally.
 
-- **Command**: the entrypoint is `antimatter-gifs` and the default command `serve`, so
+- **Command**: the entrypoint is `gifs-server` and the default command `serve`, so
   `docker run IMAGE` runs the service and `docker run IMAGE <command>` runs any other command
   (`stickers`, `import`, `fetch-tenor`, `delete`, `healthcheck`) on the same data.
 - **Port** 8080 (the API, `/media/` and `/healthz`).
@@ -67,23 +70,23 @@ Pin a version in production. `docker build -t antimatter-gifs .` builds the same
   (`--read-only --tmpfs /tmp`).
 - **Environment**: any variable of [Configuration](#configuration). The image sets
   `AM_GIFS_DATA_DIR=/data`, `AM_GIFS_LISTEN=:8080` and `AM_GIFS_STICKER_PACK` (the bundled pack).
-- **Health check**: `antimatter-gifs healthcheck` against `/healthz` (no curl needed), so
+- **Health check**: `gifs-server healthcheck` against `/healthz` (no curl needed), so
   `docker ps` and compose's `service_healthy` work.
 - **Media tools**: ffmpeg, gifsicle, rsvg-convert and fonts, for imports and uploads.
 
 **First run.** A new volume has an empty catalogue: import the bundled sticker pack once (about a
 minute and a half; the sticker files and `pack.json` are in the image under
-`/usr/share/antimatter-gifs/stickers`):
+`/usr/share/gifs-server/stickers`):
 
 ```sh
-docker run --rm -v gifs-data:/data ghcr.io/antimatterchat/antimatter-gifs stickers
+docker run --rm -v gifs-data:/data ghcr.io/antimatterchat/gifs-server stickers
 ```
 
 Running it again updates the stickers in place (e.g. after an upgrade that changes the pack). It
 can run while the service is up. Import your own GIFs the same way, with their directory mounted:
 
 ```sh
-docker run --rm -v gifs-data:/data -v "$PWD/gifs:/import:ro" ghcr.io/antimatterchat/antimatter-gifs \
+docker run --rm -v gifs-data:/data -v "$PWD/gifs:/import:ro" ghcr.io/antimatterchat/gifs-server \
     import -manifest /import/manifest.json
 ```
 
@@ -99,7 +102,7 @@ the Antimatter server, is in
 
 ## Configuration
 
-`antimatter-gifs serve` flags, which default to environment variables:
+`gifs-server serve` flags, which default to environment variables:
 
 | Flag | Variable | Default | Meaning |
 | --- | --- | --- | --- |
@@ -193,11 +196,11 @@ is unavailable).
 ### Importing
 
 ```sh
-antimatter-gifs import [-sticker] [-title T] [-tags a,b] [-description D] [-rating g|pg|pg13|r] \
+gifs-server import [-sticker] [-title T] [-tags a,b] [-description D] [-rating g|pg|pg13|r] \
     [-category TERM] [-source S -source-url URL -attribution TEXT] FILE...
-antimatter-gifs import -manifest manifest.json
-antimatter-gifs stickers [-pack stickers/pack.json]
-antimatter-gifs delete ID...
+gifs-server import -manifest manifest.json
+gifs-server stickers [-pack stickers/pack.json]
+gifs-server delete ID...
 ```
 
 Re-importing the same file (same content) or the same source item updates the existing post.
@@ -247,7 +250,7 @@ plugin does).
 
 [stickers/](stickers/) is an original pack of 24 animated stickers (Lab crew, Reactions, Everyday),
 drawn as animated SVG and licensed **CC BY 4.0** ([stickers/LICENSE](stickers/LICENSE)); credit:
-"Antimatter stickers by the Antimatter contributors, CC BY 4.0". `antimatter-gifs stickers` renders
+"Antimatter stickers by the Antimatter contributors, CC BY 4.0". `gifs-server stickers` renders
 them to transparent GIF and WebP (20 fps, one loop) and makes each pack a sticker category.
 
 To add a pack, add SVG files and a pack to `pack.json` (or make your own `pack.json`). The
@@ -263,7 +266,7 @@ featured stickers from the official Tenor API with **your own** API key, and imp
 
 ```sh
 export TENOR_API_KEY=...     # https://developers.google.com/tenor/guides/quickstart
-antimatter-gifs fetch-tenor -featured 200 -categories 12 -per-category 12 -stickers 48 -contentfilter medium
+gifs-server fetch-tenor -featured 200 -categories 12 -per-category 12 -stickers 48 -contentfilter medium
 ```
 
 - Files go to `DATA/tenor/` with a `manifest.json` (`-no-import` to stop there, `-out` for another
@@ -288,7 +291,7 @@ the image: on pushes to `antimatter` (`latest`), on `v*` tags (the version) and 
 (optional extra tag). Pull requests only build it. Make the package public in the organisation's
 package settings for anonymous pulls.
 
-Layout: `cmd/antimatter-gifs` (commands), `internal/api` (HTTP API), `internal/index` (SQLite
+Layout: `cmd/gifs-server` (commands), `internal/api` (HTTP API), `internal/index` (SQLite
 index and search), `internal/importer` (manifests, sticker packs), `internal/media` (formats),
 `internal/svgframes` (SVG animation frames), `internal/tenor` (Tenor dataset fetcher).
 

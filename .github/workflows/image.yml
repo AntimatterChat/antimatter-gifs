@@ -1,6 +1,6 @@
 name: Build the image
 
-# Tests the service, then builds ghcr.io/antimatterchat/antimatter-gifs for linux/amd64 and
+# Tests the service, then builds ghcr.io/antimatterchat/gifs-server for linux/amd64 and
 # linux/arm64. Pushes to the default branch publish `latest`, v* tags publish their version, every
 # build publishes `sha-<commit>`; pull requests only build.
 on:
@@ -23,7 +23,7 @@ permissions:
   contents: read
 
 env:
-  IMAGE: ghcr.io/antimatterchat/antimatter-gifs
+  IMAGE: ghcr.io/antimatterchat/gifs-server
   PLATFORMS: linux/amd64,linux/arm64
 
 concurrency:
@@ -73,8 +73,8 @@ jobs:
             type=raw,value=${{ inputs.version }},enable=${{ inputs.version != '' }}
             type=sha
           labels: |
-            org.opencontainers.image.title=antimatter-gifs
-            org.opencontainers.image.description=Self-hosted GIF and sticker service for Antimatter, with the Tenor API v2
+            org.opencontainers.image.title=gifs-server
+            org.opencontainers.image.description=Self-hosted GIF and sticker server with the Tenor API v2
             org.opencontainers.image.licenses=AGPL-3.0-only AND CC-BY-4.0
       - uses: docker/build-push-action@v6
         with:

@@ -1,4 +1,4 @@
-module github.com/antimatterchat/antimatter-gifs
+module github.com/antimatterchat/gifs-server
 
 go 1.25.0
 

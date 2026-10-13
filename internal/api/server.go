@@ -16,8 +16,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/importer"
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/importer"
+	"github.com/antimatterchat/gifs-server/internal/index"
 )
 
 // Config configures the server.

@@ -13,10 +13,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/importer"
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
-	"github.com/antimatterchat/antimatter-gifs/internal/media"
-	"github.com/antimatterchat/antimatter-gifs/internal/tenor"
+	"github.com/antimatterchat/gifs-server/internal/importer"
+	"github.com/antimatterchat/gifs-server/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/media"
+	"github.com/antimatterchat/gifs-server/internal/tenor"
 )
 
 // importerFlags are the flags of the commands that import.
@@ -175,7 +175,7 @@ func fetchTenor(ctx context.Context, args []string) error {
 	}
 	fetcher := &tenor.Fetcher{
 		Key:           os.Getenv("TENOR_API_KEY"),
-		ClientKey:     env("TENOR_CLIENT_KEY", "antimatter-gifs"),
+		ClientKey:     env("TENOR_CLIENT_KEY", "gifs-server"),
 		BaseURL:       *baseURL,
 		Locale:        *locale,
 		ContentFilter: *contentFilter,

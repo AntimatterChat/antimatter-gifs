@@ -16,9 +16,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/importer"
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
-	"github.com/antimatterchat/antimatter-gifs/internal/svgframes"
+	"github.com/antimatterchat/gifs-server/internal/importer"
+	"github.com/antimatterchat/gifs-server/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/svgframes"
 )
 
 // DefaultUploadMaxBytes is the largest file POST /v2/upload accepts by default.
@@ -233,7 +233,7 @@ func (s *Server) upload(r *http.Request, maxBytes int64) (*index.Post, error) {
 		return nil, errBadRequest{fmt.Sprintf("Unsupported file type: %ss can be %s files.", kind, strings.ToUpper(strings.ReplaceAll(strings.Join(uploadTypes[kind], ", "), ".", "")))}
 	}
 
-	dir, err := os.MkdirTemp("", "antimatter-gifs-upload-")
+	dir, err := os.MkdirTemp("", "gifs-server-upload-")
 	if err != nil {
 		return nil, err
 	}

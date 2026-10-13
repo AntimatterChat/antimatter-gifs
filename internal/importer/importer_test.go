@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/index"
-	"github.com/antimatterchat/antimatter-gifs/internal/media"
+	"github.com/antimatterchat/gifs-server/internal/index"
+	"github.com/antimatterchat/gifs-server/internal/media"
 )
 
 func writeGIF(t *testing.T, file string, frames int) {

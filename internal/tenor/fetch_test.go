@@ -16,7 +16,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/antimatterchat/antimatter-gifs/internal/importer"
+	"github.com/antimatterchat/gifs-server/internal/importer"
 )
 
 // fakeTenor answers like the Tenor API with generated posts.
@@ -46,7 +46,7 @@ func fakeTenor(t *testing.T, downloads *atomic.Int32) *httptest.Server {
 			fmt.Fprint(w, "media "+r.URL.Path)
 			return
 		}
-		if q.Get("key") != "secret" || q.Get("client_key") != "antimatter-gifs" || q.Get("contentfilter") != "high" {
+		if q.Get("key") != "secret" || q.Get("client_key") != "gifs-server" || q.Get("contentfilter") != "high" {
 			http.Error(w, `{"error":{"code":400}}`, http.StatusBadRequest)
 			return
 		}
