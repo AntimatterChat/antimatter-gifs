@@ -292,6 +292,16 @@ Layout: `cmd/antimatter-gifs` (commands), `internal/api` (HTTP API), `internal/i
 index and search), `internal/importer` (manifests, sticker packs), `internal/media` (formats),
 `internal/svgframes` (SVG animation frames), `internal/tenor` (Tenor dataset fetcher).
 
+## Feedback and support
+
+Found a bug in the GIF service, or missing a feature? Please [open an
+issue](https://github.com/AntimatterChat/community/issues/new/choose) in the [Antimatter community
+repository](https://github.com/AntimatterChat/community), where the feedback for every part of
+Antimatter is gathered. Questions and ideas are welcome in its
+[Discussions](https://github.com/AntimatterChat/community/discussions). Please report security
+problems privately, as explained in the [security
+policy](https://github.com/AntimatterChat/.github/blob/main/SECURITY.md).
+
 ## License
 
 GNU Affero General Public License v3.0, see [LICENSE](LICENSE). The sticker artwork in
