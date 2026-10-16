@@ -31,10 +31,24 @@ Usage:
   gifs-server fetch-tenor [flags]         download a starter dataset from Tenor (TENOR_API_KEY)
   gifs-server delete ID...                delete posts
   gifs-server healthcheck [-url URL]      check a running service (for containers)
+  gifs-server version                     print the version
 
 Run "gifs-server COMMAND -h" for the flags of a command. Flags default to AM_GIFS_*
 environment variables, e.g. AM_GIFS_DATA_DIR for -data.
 `
+
+// version and commit are set at build time by the release build (-ldflags "-X main.version=...").
+var (
+	version = "dev"
+	commit  = ""
+)
+
+func versionString() string {
+	if commit == "" {
+		return "gifs-server " + version
+	}
+	return "gifs-server " + version + " (" + commit + ")"
+}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -51,6 +65,10 @@ func main() {
 		"fetch-tenor": fetchTenor,
 		"delete":      deletePosts,
 		"healthcheck": healthcheck,
+		"version": func(context.Context, []string) error {
+			fmt.Println(versionString())
+			return nil
+		},
 	}
 	cmd, ok := commands[os.Args[1]]
 	if !ok {
