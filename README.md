@@ -100,6 +100,30 @@ A complete deployment with Antimatter, PostgreSQL and nginx, where the service i
 the Antimatter server, is in
 [antimatter-docker](https://github.com/AntimatterChat/antimatter-docker/tree/main/deploy/compose).
 
+## Packages and binaries
+
+Each release (`vX.Y.Z` tag) on the [releases page](https://github.com/AntimatterChat/gifs-server/releases)
+has static binaries for Linux `amd64` and `arm64` (`gifs-server-X.Y.Z-linux-<arch>.tar.gz`), `.deb`
+and `.rpm` packages and a `SHA256SUMS` file. Check a download with `sha256sum -c SHA256SUMS
+--ignore-missing`.
+
+```sh
+sudo apt install ./gifs-server_X.Y.Z_amd64.deb          # Debian, Ubuntu
+sudo dnf install ./gifs-server-X.Y.Z-1.x86_64.rpm       # Fedora, RHEL, Rocky, Alma
+sudo systemctl start gifs-server-stickers               # import the sticker pack, once
+sudo systemctl start gifs-server
+```
+
+The packages install `/usr/bin/gifs-server`, the sticker pack in `/usr/share/gifs-server/stickers`
+and the `gifs-server.service` systemd unit, which runs as the `gifs-server` system user with its
+data in `/var/lib/gifs-server` and logs to the journal (`journalctl -u gifs-server`). The service is
+enabled but not started at install. Settings are `AM_GIFS_*` variables in
+`/etc/gifs-server/gifs-server.env` (kept on upgrades); it listens on `127.0.0.1:8080` and reads its
+API keys from `/etc/gifs-server/api-keys`, where the first install writes a random key. ffmpeg,
+gifsicle and rsvg-convert are recommended, for imports and uploads. Run other commands as the
+service user, e.g. `sudo -u gifs-server env AM_GIFS_DATA_DIR=/var/lib/gifs-server gifs-server import
+-tags cat cat.gif`. `gifs-server version` prints the version.
+
 ## Configuration
 
 `gifs-server serve` flags, which default to environment variables:

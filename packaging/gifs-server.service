@@ -1,0 +1,48 @@
+# gifs-server, installed by the gifs-server .deb/.rpm package. Settings: /etc/gifs-server/gifs-server.env.
+# Override this unit with `systemctl edit gifs-server` rather than editing it: upgrades replace it.
+[Unit]
+Description=gifs-server, a GIF and sticker service with the Tenor API v2
+Documentation=https://github.com/AntimatterChat/gifs-server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gifs-server
+Group=gifs-server
+# Package defaults; the EnvironmentFile overrides them.
+Environment=AM_GIFS_DATA_DIR=/var/lib/gifs-server
+Environment=AM_GIFS_STICKER_PACK=/usr/share/gifs-server/stickers/pack.json
+Environment=XDG_CACHE_HOME=/var/cache/gifs-server
+EnvironmentFile=/etc/gifs-server/gifs-server.env
+ExecStart=/usr/bin/gifs-server serve
+WorkingDirectory=/var/lib/gifs-server
+StateDirectory=gifs-server
+StateDirectoryMode=0750
+CacheDirectory=gifs-server
+Restart=on-failure
+RestartSec=5
+
+# Hardening: the service only writes its data and cache directories.
+UMask=0027
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

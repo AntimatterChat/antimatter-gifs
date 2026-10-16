@@ -1,0 +1,116 @@
+# GoReleaser configuration of the gifs-server release (see .github/workflows/release.yml):
+# static Linux binaries for amd64 and arm64, .tar.gz archives, .deb and .rpm packages and a
+# SHA256SUMS file. The workflow publishes the GitHub release itself, so GoReleaser only builds.
+#
+#   goreleaser release --snapshot --clean   # local test build into dist/
+version: 2
+
+project_name: gifs-server
+
+builds:
+  - id: gifs-server
+    main: ./cmd/gifs-server
+    binary: gifs-server
+    env:
+      # Pure Go (the SQLite index is modernc.org/sqlite): static binaries.
+      - CGO_ENABLED=0
+    goos: [linux]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w -X main.version={{ .Version }} -X main.commit={{ .FullCommit }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - id: archive
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    wrap_in_directory: true
+    builds_info:
+      owner: root
+      group: root
+      mode: 0755
+      mtime: "{{ .CommitDate }}"
+    files:
+      - src: LICENSE
+        info: &root
+          owner: root
+          group: root
+          mtime: "{{ .CommitDate }}"
+      - src: README.md
+        info: *root
+      - src: stickers/**/*
+        info: *root
+      - src: packaging/*.service
+        info: *root
+      - src: packaging/gifs-server.env
+        info: *root
+
+checksum:
+  name_template: SHA256SUMS
+  algorithm: sha256
+
+nfpms:
+  - id: packages
+    package_name: gifs-server
+    file_name_template: "{{ .ConventionalFileName }}"
+    formats: [deb, rpm]
+    vendor: Antimatter
+    homepage: https://github.com/AntimatterChat/gifs-server
+    maintainer: Antimatter contributors <https://github.com/AntimatterChat>
+    description: |-
+      Self-hosted GIF and sticker server with the Tenor API v2.
+      It serves your own GIF and sticker catalogue to Tenor clients such as the Antimatter GIFs
+      app, with full-text search, categories, trending terms and an original sticker pack.
+    license: AGPL-3.0-only AND CC-BY-4.0
+    section: net
+    priority: optional
+    bindir: /usr/bin
+    # ffmpeg, gifsicle and rsvg-convert generate the GIF, video and sticker formats at import and
+    # upload; the service runs without them.
+    overrides:
+      deb:
+        recommends:
+          - ffmpeg
+          - gifsicle
+          - librsvg2-bin
+          - fonts-dejavu-core
+      rpm:
+        recommends:
+          - ffmpeg
+          - gifsicle
+          - librsvg2-tools
+          - dejavu-sans-fonts
+    contents:
+      - src: packaging/gifs-server.service
+        dst: /usr/lib/systemd/system/gifs-server.service
+        file_info:
+          mode: 0644
+      - src: packaging/gifs-server-stickers.service
+        dst: /usr/lib/systemd/system/gifs-server-stickers.service
+        file_info:
+          mode: 0644
+      - src: packaging/gifs-server.env
+        dst: /etc/gifs-server/gifs-server.env
+        type: config|noreplace
+        file_info:
+          mode: 0640
+      - src: stickers/
+        dst: /usr/share/gifs-server/stickers/
+        type: tree
+      - src: README.md
+        dst: /usr/share/doc/gifs-server/README.md
+      - src: LICENSE
+        dst: /usr/share/doc/gifs-server/LICENSE
+    scripts:
+      postinstall: packaging/scripts/postinstall.sh
+      preremove: packaging/scripts/preremove.sh
+      postremove: packaging/scripts/postremove.sh
+    rpm:
+      group: Applications/Internet
+
+release:
+  disable: true
+
+changelog:
+  disable: true

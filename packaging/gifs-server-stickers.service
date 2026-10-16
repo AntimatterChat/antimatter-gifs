@@ -1,0 +1,25 @@
+# Imports (or updates) the sticker pack that comes with gifs-server into its catalogue:
+#   sudo systemctl start gifs-server-stickers
+# It takes about a minute and a half and can run while gifs-server is up.
+[Unit]
+Description=Import the gifs-server sticker pack
+Documentation=https://github.com/AntimatterChat/gifs-server
+
+[Service]
+Type=oneshot
+User=gifs-server
+Group=gifs-server
+Environment=AM_GIFS_DATA_DIR=/var/lib/gifs-server
+Environment=AM_GIFS_STICKER_PACK=/usr/share/gifs-server/stickers/pack.json
+Environment=XDG_CACHE_HOME=/var/cache/gifs-server
+EnvironmentFile=/etc/gifs-server/gifs-server.env
+ExecStart=/usr/bin/gifs-server stickers
+WorkingDirectory=/var/lib/gifs-server
+StateDirectory=gifs-server
+StateDirectoryMode=0750
+CacheDirectory=gifs-server
+UMask=0027
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
