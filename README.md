@@ -295,6 +295,11 @@ Layout: `cmd/gifs-server` (commands), `internal/api` (HTTP API), `internal/index
 index and search), `internal/importer` (manifests, sticker packs), `internal/media` (formats),
 `internal/svgframes` (SVG animation frames), `internal/tenor` (Tenor dataset fetcher).
 
+## Documentation
+
+The admin guide covers [setting up the GIFs app](https://antimatter.chat/docs/admins/apps.html#gifs) with this
+service, on [antimatter.chat/docs](https://antimatter.chat/docs/).
+
 ## Feedback and support
 
 Found a bug in the GIF service, or missing a feature? Please [open an
