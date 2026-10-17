@@ -164,6 +164,42 @@ func (s *Server) handleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// handleDeleteUpload removes a GIF or sticker added with POST /v2/upload, with its media files and
+// its place in sticker packs. Imported posts (the catalogue, Tenor's) can't be removed this way: they
+// answer 404 as if they didn't exist, so that a client can't probe the catalogue either.
+func (s *Server) handleDeleteUpload(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if id == "" || len(id) > 64 || strings.ContainsAny(id, `/\.,?#`) {
+		writeError(w, http.StatusBadRequest, "INVALID_ARGUMENT", "Invalid id.")
+		return
+	}
+	posts, err := s.store.GetPosts(r.Context(), []string{id})
+	if err != nil {
+		s.log.Error("delete upload failed", "error", err)
+		writeError(w, http.StatusInternalServerError, "INTERNAL", "Internal error.")
+		return
+	}
+	if len(posts) == 0 || posts[0].Source != UploadSource {
+		writeError(w, http.StatusNotFound, "NOT_FOUND", "No upload with this id.")
+		return
+	}
+
+	// Not while an upload is converted: it may be this file again.
+	s.uploadMu.Lock()
+	defer s.uploadMu.Unlock()
+	if err := s.cfg.Importer.Delete(r.Context(), id); err != nil {
+		if errors.Is(err, index.ErrNotFound) {
+			writeError(w, http.StatusNotFound, "NOT_FOUND", "No upload with this id.")
+			return
+		}
+		s.log.Error("delete upload failed", "error", err)
+		writeError(w, http.StatusInternalServerError, "INTERNAL", "Internal error.")
+		return
+	}
+	s.log.Info("upload deleted", "id", id, "kind", posts[0].Kind)
+	w.WriteHeader(http.StatusNoContent)
+}
+
 var (
 	errTooLarge      = errors.New("file too large")
 	errUnconvertible = errors.New("file can't be converted")

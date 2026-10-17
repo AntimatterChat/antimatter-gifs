@@ -244,10 +244,14 @@ func (s *Store) UpsertPost(ctx context.Context, p *Post) error {
 	})
 }
 
-// DeletePost removes a post.
+// DeletePost removes a post, with its media, tags, statistics and category memberships.
 func (s *Store) DeletePost(ctx context.Context, id string) error {
 	return s.tx(ctx, func(tx *sql.Tx) error {
 		if _, err := tx.ExecContext(ctx, `DELETE FROM posts_fts WHERE post_id = ?`, id); err != nil {
+			return err
+		}
+		// A category whose tile it was shows its first member instead.
+		if _, err := tx.ExecContext(ctx, `UPDATE categories SET image_post_id = '' WHERE image_post_id = ?`, id); err != nil {
 			return err
 		}
 		res, err := tx.ExecContext(ctx, `DELETE FROM posts WHERE id = ?`, id)

@@ -112,6 +112,8 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("/v2/posts", api(s.handlePosts))
 	// Not a Tenor endpoint: trusted clients (the Antimatter GIFs plugin) add GIFs and stickers.
 	mux.Handle("POST /v2/upload", s.rateLimit(s.requireUploadKey(http.HandlerFunc(s.handleUpload))))
+	// And remove what they added (never the imported catalogue).
+	mux.Handle("DELETE /v2/upload/{id}", s.rateLimit(s.requireUploadKey(http.HandlerFunc(s.handleDeleteUpload))))
 	mux.Handle("/v2/", s.cors(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "NOT_FOUND", "Unknown endpoint.")
 	})))

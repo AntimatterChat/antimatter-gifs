@@ -27,6 +27,13 @@ var tinyGIF = []byte("GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff
 
 func newUploadServer(t *testing.T, cfg Config) http.Handler {
 	t.Helper()
+	h, _, _ := newUploadServerStore(t, cfg)
+	return h
+}
+
+// newUploadServerStore is newUploadServer, also returning its index and media directory.
+func newUploadServerStore(t *testing.T, cfg Config) (http.Handler, *index.Store, string) {
+	t.Helper()
 	dir := t.TempDir()
 	store, err := index.Open(filepath.Join(dir, "index.db"))
 	if err != nil {
@@ -39,7 +46,7 @@ func newUploadServer(t *testing.T, cfg Config) http.Handler {
 	cfg.Now = func() time.Time { return now }
 	// Without the conversion tools, GIFs are kept as they are and other files can't be converted.
 	cfg.Importer = &importer.Importer{Store: store, MediaDir: cfg.MediaDir, Tools: media.Tools{}, Logger: quiet}
-	return New(store, cfg).Handler()
+	return New(store, cfg).Handler(), store, cfg.MediaDir
 }
 
 type upload struct {

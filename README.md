@@ -211,6 +211,12 @@ The file is converted like imported files (one upload at a time) and the answer 
 post. Errors: `400` (invalid field or file type), `403` (missing or invalid key), `413` (file too
 large), `422` (the file can't be converted).
 
+`DELETE /v2/upload/{id}`, with an upload key too, removes a GIF or sticker added that way: its post,
+its media files and its place in sticker packs. It answers `204`, or `404` for unknown ids and for
+imported posts, which it never removes (use `gifs-server delete` or a new import for the catalogue).
+The client decides who may delete what: the Antimatter GIFs plugin lets people delete what they
+added, and system admins anything uploaded.
+
 Other routes: `GET /media/...` (media files, cacheable, sandboxed by a CSP), `GET /view/{id}` (a page
 per post, with attribution), `GET /healthz` (`{"status": "ok", "posts": n}`, `503` when the index
 is unavailable).
